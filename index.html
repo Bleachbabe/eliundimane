@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bewerbung — Bachelor Prozessgestaltung</title>
+  <style>
+    :root {
+      --blue: #1a5cff;
+      --black: #000;
+      --white: #fff;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Arial Black', Arial, sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CUSTOM CURSOR ──────────────────────────────────────── */
+    #c-dot {
+      position: fixed;
+      width: 7px; height: 7px;
+      background: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width .2s, height .2s, background .2s;
+      mix-blend-mode: difference;
+    }
+    #c-ring {
+      position: fixed;
+      width: 38px; height: 38px;
+      border: 1.5px solid rgba(255,255,255,.55);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width .35s cubic-bezier(.16,1,.3,1),
+                  height .35s cubic-bezier(.16,1,.3,1),
+                  border-color .3s;
+    }
+    body.ch #c-ring { width: 60px; height: 60px; border-color: var(--blue); }
+    body.ch #c-dot  { width: 10px; height: 10px; background: var(--blue); }
+
+    /* ── NAV ────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 22px 30px;
+      mix-blend-mode: difference;
+    }
+    .nav-left { display: flex; gap: 28px; }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      letter-spacing: .04em;
+      position: relative;
+      display: inline-block;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: #fff;
+      transition: width .3s ease;
+    }
+    nav a:hover::after { width: 100%; }
+
+    /* ── SIDE DOTS ──────────────────────────────────────────── */
+    .side-dots {
+      position: fixed;
+      right: 24px; top: 50%;
+      transform: translateY(-50%);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .side-dot {
+      width: 6px; height: 6px;
+      border: 1.5px solid rgba(255,255,255,.35);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all .3s;
+    }
+    .side-dot.on { background: #fff; border-color: #fff; transform: scale(1.2); }
+
+    /* ── SECTIONS ───────────────────────────────────────────── */
+    .section {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .section-bg {
+      position: absolute;
+      inset: -50px;
+      background-image: url('bild.jpeg');
+      background-size: cover;
+      background-position: center center;
+      filter: brightness(.38);
+      will-change: transform;
+      transition: filter .5s ease;
+    }
+    .section:hover .section-bg { filter: brightness(.5); }
+    .section-2 .section-bg { background-position: center 60%; }
+
+    /* ── HERO TEXT ──────────────────────────────────────────── */
+    .hero {
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      transform: translateY(-55%);
+      text-align: center;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .hero-name {
+      display: block;
+      font-size: clamp(84px, 16vw, 200px);
+      font-weight: 900;
+      line-height: .88;
+      letter-spacing: -.02em;
+      overflow: hidden;
+    }
+    .hero-date {
+      display: block;
+      font-size: clamp(68px, 13vw, 160px);
+      font-weight: 900;
+      line-height: .9;
+      letter-spacing: -.02em;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .char {
+      display: inline-block;
+      transform: translateY(115%);
+      transition: transform .65s cubic-bezier(.16,1,.3,1);
+    }
+    .char.in { transform: translateY(0); }
+
+    /* ── CONTENT PANEL ──────────────────────────────────────── */
+    .panel {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: #fff;
+      color: #000;
+      z-index: 3;
+      transform: translateY(calc(100% - 58px));
+      transition: transform .6s cubic-bezier(.4,0,.2,1);
+    }
+    .section:hover .panel { transform: translateY(0); }
+
+    .panel-peek {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      padding: 0 34px;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,.4);
+      cursor: pointer;
+    }
+    .panel-peek .arr {
+      margin-left: 10px;
+      display: inline-block;
+      transition: transform .4s;
+    }
+    .section:hover .panel-peek .arr { transform: rotate(180deg); }
+
+    .panel-body { padding: 4px 34px 36px; }
+
+    .panel-body h2 {
+      font-size: clamp(16px, 2.2vw, 25px);
+      font-weight: 900;
+      letter-spacing: -.01em;
+      line-height: 1.1;
+      margin-bottom: 5px;
+    }
+    .panel-body .sub {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: #777;
+      margin-bottom: 13px;
+    }
+    .panel-body p {
+      font-family: Arial, sans-serif;
+      font-size: 11.5px;
+      line-height: 1.65;
+      color: #333;
+      max-width: 580px;
+      margin-bottom: 22px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 22px;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background .25s, gap .25s;
+    }
+    .btn:hover { background: var(--blue); gap: 16px; }
+
+    /* ── DIVIDER ────────────────────────────────────────────── */
+    .divider { width: 100%; height: 3px; background: var(--blue); }
+
+    /* ── MINDMAP OVERLAY ────────────────────────────────────── */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 800;
+      background: rgba(0,0,0,.96);
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(.97);
+      transition: opacity .4s ease, transform .4s cubic-bezier(.16,1,.3,1);
+    }
+    #overlay.open { opacity: 1; pointer-events: all; transform: scale(1); }
+
+    .ov-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 32px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      flex-shrink: 0;
+    }
+    .ov-label {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+      margin-bottom: 4px;
+    }
+    .ov-name {
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .btn-x {
+      background: none;
+      border: 1px solid rgba(255,255,255,.25);
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: .06em;
+      padding: 9px 18px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .btn-x:hover { border-color: #fff; background: rgba(255,255,255,.07); }
+
+    .ov-canvas {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 24px;
+      overflow: hidden;
+    }
+
+    #mm-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .ov-hint {
+      text-align: center;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.2);
+      flex-shrink: 0;
+    }
+
+    /* ── SVG styles ─────────────────────────────────────────── */
+    .mm-path {
+      fill: none;
+      stroke: rgba(255,255,255,.3);
+      stroke-width: 1.2;
+      stroke-dasharray: 700;
+      stroke-dashoffset: 700;
+      transition: stroke-dashoffset .55s cubic-bezier(.4,0,.2,1),
+                  stroke .3s;
+    }
+    .mm-path.go { stroke-dashoffset: 0; }
+    .mm-path.hi { stroke: var(--blue); stroke-width: 1.8; }
+
+    .mm-cpath {
+      fill: none;
+      stroke: rgba(255,255,255,.18);
+      stroke-width: .9;
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+      transition: stroke-dashoffset .35s ease;
+    }
+    .mm-cpath.go { stroke-dashoffset: 0; }
+
+    .mm-label {
+      font-family: 'Arial Black', Arial, sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      fill: #fff;
+      cursor: pointer;
+      transition: fill .2s;
+    }
+    .mm-label:hover, .mm-label.on { fill: var(--blue); }
+
+    .mm-clabel {
+      font-family: Arial, sans-serif;
+      font-size: 11.5px;
+      fill: rgba(255,255,255,.65);
+      transition: opacity .3s ease;
+    }
+
+    .mm-dot {
+      fill: rgba(255,255,255,.85);
+      cursor: pointer;
+      transition: fill .2s;
+    }
+    .mm-dot.on { fill: var(--blue); }
+
+    .mm-cdot { fill: rgba(255,255,255,.35); }
+
+    .mm-center {
+      font-family: 'Arial Black', Arial, sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+      fill: #fff;
+      text-anchor: middle;
+    }
+
+    .mm-children {
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+    .mm-children.show { opacity: 1; }
+
+    /* ── PROGRESS BAR ───────────────────────────────────────── */
+    #progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--blue);
+      width: 0%;
+      z-index: 600;
+      transition: width .1s linear;
+    }
+  </style>
+</head>
+<body>
+
+<div id="c-dot"></div>
+<div id="c-ring"></div>
+<div id="progress"></div>
+
+<nav>
+  <div class="nav-left">
+    <a href="#s1" data-orig="blume">blume</a>
+    <a href="#s2" data-orig="erstitch">erstitch</a>
+  </div>
+  <a href="#" id="lang-btn">en</a>
+</nav>
+
+<div class="side-dots">
+  <div class="side-dot on" onclick="goTo(0)"></div>
+  <div class="side-dot"    onclick="goTo(1)"></div>
+</div>
+
+<!-- SECTION 1 -->
+<div class="section" id="s1">
+  <div class="section-bg"></div>
+  <div class="hero">
+    <span class="hero-name" id="n1">Elisabeth</span>
+    <span class="hero-date" id="d1">29.03</span>
+  </div>
+  <div class="panel">
+    <div class="panel-peek">Bewerbung erkunden <span class="arr">↑</span></div>
+    <div class="panel-body">
+      <h2>Zwischen Reibung und Beziehung</h2>
+      <div class="sub">Bewerbung Bachelor Prozessgestaltung (BA) — Dominik Schurop (er/ihm)</div>
+      <p>Die Bewerbung ist in drei Teile gegliedert. Zu Beginn eine anklickbare Mindmap als
+      Zugang zu meinem Profil, danach meine Gedanken zum Studium und zu meiner Perspektive.
+      Am Ende der Anhang mit den einzelnen Detailbereichen der Mindmap.</p>
+      <button class="btn" onclick="openMap('s1')">Mindmap erkunden →</button>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SECTION 2 -->
+<div class="section section-2" id="s2">
+  <div class="section-bg"></div>
+  <div class="hero">
+    <span class="hero-name" id="n2">Imane</span>
+  </div>
+  <div class="panel">
+    <div class="panel-peek">Bewerbung erkunden <span class="arr">↑</span></div>
+    <div class="panel-body">
+      <h2>Titel der Bewerbung</h2>
+      <div class="sub">Bewerbung Bachelor Prozessgestaltung (BA) — Imane (er/ihm)</div>
+      <p>Beschreibung der Bewerbung folgt hier. Die Bewerbung ist in drei Teile gegliedert.
+      Zu Beginn eine anklickbare Mindmap als Zugang zu meinem Profil, danach meine Gedanken
+      zum Studium und zu meiner Perspektive.</p>
+      <button class="btn" onclick="openMap('s2')">Mindmap erkunden →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MINDMAP OVERLAY -->
+<div id="overlay">
+  <div class="ov-header">
+    <div>
+      <div class="ov-label">Mindmap</div>
+      <div class="ov-name" id="ov-name"></div>
+    </div>
+    <button class="btn-x" onclick="closeMap()">Schließen ✕</button>
+  </div>
+  <div class="ov-canvas">
+    <svg id="mm-svg" viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+  <div class="ov-hint">Klicke auf ein Stichwort — weitere Begriffe erscheinen</div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────
+const DATA = {
+  s1: {
+    name: 'Elisabeth — 29.03',
+    nodes: [
+      { label: 'Hyperpop',      angle: 232, dist: 210,
+        children: ['PC Music', 'Charli XCX', 'Ästhetik', 'Digitales Ich', 'Überwältigung'] },
+      { label: 'Reibung',       angle: 188, dist: 205,
+        children: ['Konflikt', 'Spannung', 'Berührung', 'Widerstand', 'Krise'] },
+      { label: 'Strom',         angle: 148, dist: 200,
+        children: ['Energie', 'Fluss', 'Verbindung', 'Elektrizität'] },
+      { label: 'Stoff',         angle: 318, dist: 210,
+        children: ['Material', 'Textur', 'Körper', 'Gewebe', 'Haptik'] },
+      { label: 'Konstellation', angle:  12, dist: 215,
+        children: ['Beziehung', 'Netz', 'Mapping', 'Struktur'] },
+    ]
+  },
+  s2: {
+    name: 'Imane',
+    nodes: [
+      { label: 'Thema 1', angle: 232, dist: 210, children: ['Begriff A', 'Begriff B', 'Begriff C', 'Begriff D'] },
+      { label: 'Thema 2', angle: 188, dist: 205, children: ['Begriff E', 'Begriff F', 'Begriff G'] },
+      { label: 'Thema 3', angle: 148, dist: 200, children: ['Begriff H', 'Begriff I', 'Begriff J'] },
+      { label: 'Thema 4', angle: 318, dist: 210, children: ['Begriff K', 'Begriff L', 'Begriff M'] },
+      { label: 'Thema 5', angle:  12, dist: 215, children: ['Begriff N', 'Begriff O', 'Begriff P', 'Begriff Q'] },
+    ]
+  }
+};
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const CX = 500, CY = 295;
+
+const R  = d => d * Math.PI / 180;
+const pt = (a, d) => ({ x: CX + Math.cos(R(a)) * d, y: CY + Math.sin(R(a)) * d });
+
+// ─────────────────────────────────────────────────────────────
+// CURSOR
+// ─────────────────────────────────────────────────────────────
+const dot = document.getElementById('c-dot');
+const ring = document.getElementById('c-ring');
+let mx = -100, my = -100, rx = -100, ry = -100;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+(function tick() {
+  dot.style.cssText  = `left:${mx}px;top:${my}px`;
+  rx += (mx - rx) * .11;
+  ry += (my - ry) * .11;
+  ring.style.cssText = `left:${rx}px;top:${ry}px`;
+  requestAnimationFrame(tick);
+})();
+
+function hov(els) {
+  els.forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('ch'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
+  });
+}
+hov(document.querySelectorAll('a, button, .side-dot'));
+
+// ─────────────────────────────────────────────────────────────
+// PARALLAX
+// ─────────────────────────────────────────────────────────────
+document.addEventListener('mousemove', e => {
+  const px = (e.clientX / innerWidth  - .5) * 28;
+  const py = (e.clientY / innerHeight - .5) * 18;
+  document.querySelectorAll('.section-bg').forEach(bg => {
+    bg.style.transform = `translate(${px}px,${py}px)`;
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// TEXT REVEAL
+// ─────────────────────────────────────────────────────────────
+function wrap(el) {
+  el.innerHTML = [...el.textContent].map((c, i) =>
+    `<span class="char" style="transition-delay:${i*52}ms">${c === ' ' ? '&nbsp;' : c}</span>`
+  ).join('');
+}
+
+['n1','d1','n2'].forEach(id => { const el = document.getElementById(id); if (el) wrap(el); });
+
+new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting)
+      e.target.querySelectorAll('.char').forEach(c => c.classList.add('in'));
+  });
+}, { threshold: .25 }).observe(document.querySelector('.section'));
+
+// Reveal section 1 immediately
+setTimeout(() => {
+  document.querySelectorAll('#n1 .char').forEach(c => c.classList.add('in'));
+  setTimeout(() => document.querySelectorAll('#d1 .char').forEach(c => c.classList.add('in')), 180);
+}, 80);
+
+// Section 2 on scroll
+new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting)
+    document.querySelectorAll('#n2 .char').forEach(c => c.classList.add('in'));
+}, { threshold: .3 }).observe(document.getElementById('s2'));
+
+// ─────────────────────────────────────────────────────────────
+// NAV SCRAMBLE
+// ─────────────────────────────────────────────────────────────
+const SC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+function scramble(el) {
+  const orig = el.dataset.orig;
+  let f = 0, total = 12;
+  const iv = setInterval(() => {
+    el.textContent = [...orig].map((c, i) =>
+      f / total > i / orig.length ? c : SC[Math.random() * SC.length | 0]
+    ).join('');
+    if (++f > total) { el.textContent = orig; clearInterval(iv); }
+  }, 38);
+}
+document.querySelectorAll('nav a[data-orig]').forEach(a => a.addEventListener('mouseenter', () => scramble(a)));
+
+// ─────────────────────────────────────────────────────────────
+// SIDE DOTS + SCROLL
+// ─────────────────────────────────────────────────────────────
+const sections = document.querySelectorAll('.section');
+const dots = document.querySelectorAll('.side-dot');
+
+function goTo(i) { sections[i]?.scrollIntoView({ behavior: 'smooth' }); }
+
+new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const i = [...sections].indexOf(e.target);
+      dots.forEach((d, j) => d.classList.toggle('on', i === j));
+    }
+  });
+}, { threshold: .5 }).observe(sections[0]);
+
+new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const i = [...sections].indexOf(e.target);
+      dots.forEach((d, j) => d.classList.toggle('on', i === j));
+    }
+  });
+}, { threshold: .5 }).observe(sections[1]);
+
+// ─────────────────────────────────────────────────────────────
+// PROGRESS BAR
+// ─────────────────────────────────────────────────────────────
+const prog = document.getElementById('progress');
+document.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - innerHeight;
+  prog.style.width = (scrollY / h * 100) + '%';
+});
+
+// ─────────────────────────────────────────────────────────────
+// LANG TOGGLE
+// ─────────────────────────────────────────────────────────────
+document.getElementById('lang-btn').addEventListener('click', e => {
+  e.preventDefault();
+  const b = e.currentTarget;
+  b.textContent = b.textContent === 'en' ? 'de' : 'en';
+});
+
+// ─────────────────────────────────────────────────────────────
+// MINDMAP OVERLAY
+// ─────────────────────────────────────────────────────────────
+function mk(tag, attrs, parent) {
+  const el = document.createElementNS(SVG_NS, tag);
+  Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k, v));
+  parent?.appendChild(el);
+  return el;
+}
+
+function qbez(x1, y1, x2, y2) {
+  // Slight curve towards center
+  const mx = (x1+x2)/2, my = (y1+y2)/2;
+  const dx = (CX-mx)*.12, dy = (CY-my)*.12;
+  return `M ${x1} ${y1} Q ${mx+dx} ${my+dy} ${x2} ${y2}`;
+}
+
+function openMap(key) {
+  const data = DATA[key];
+  document.getElementById('ov-name').textContent = data.name;
+  renderMap(data);
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMap() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => document.getElementById('mm-svg').innerHTML = '', 400);
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMap(); });
+
+function renderMap(data) {
+  const svg = document.getElementById('mm-svg');
+  svg.innerHTML = '';
+
+  const paths  = mk('g', {}, svg);
+  const nodes  = mk('g', {}, svg);
+
+  // Center
+  mk('circle', { cx: CX, cy: CY, r: 5, fill: '#fff', opacity: '.9' }, nodes);
+  const ct = mk('text', { x: CX, y: CY - 16, class: 'mm-center' }, nodes);
+  ct.textContent = 'ICH';
+
+  data.nodes.forEach((node, ni) => {
+    const np = pt(node.angle, node.dist);
+    const anchor = np.x < CX - 30 ? 'end' : np.x > CX + 30 ? 'start' : 'middle';
+    const lox = anchor === 'end' ? -11 : anchor === 'start' ? 11 : 0;
+    const loy = np.y < CY ? -12 : 12;
+
+    // Main path
+    const path = mk('path', {
+      d: qbez(CX, CY, np.x, np.y),
+      class: 'mm-path'
+    }, paths);
+    setTimeout(() => path.classList.add('go'), 60 + ni * 90);
+
+    // Node dot
+    const ndot = mk('circle', { cx: np.x, cy: np.y, r: 4, class: 'mm-dot', style: 'cursor:pointer' }, nodes);
+
+    // Node label
+    const lbl = mk('text', {
+      x: np.x + lox,
+      y: np.y + loy + 4,
+      class: 'mm-label',
+      'text-anchor': anchor
+    }, nodes);
+    lbl.textContent = node.label;
+
+    // Children container
+    const childG = mk('g', { class: 'mm-children' }, paths);
+    const count = node.children.length;
+
+    node.children.forEach((child, ci) => {
+      const spread = Math.min(42, 150 / count);
+      const off = (ci - (count - 1) / 2) * spread;
+      const ca = node.angle + off * .55;
+      const cp = pt(ca, node.dist + 115);
+      // relative to np:
+      const cpx = np.x + Math.cos(R(ca)) * 115;
+      const cpy = np.y + Math.sin(R(ca)) * 115;
+
+      const cpath = mk('path', {
+        d: qbez(np.x, np.y, cpx, cpy),
+        class: 'mm-cpath',
+        style: `transition-delay:${ci*42}ms`
+      }, childG);
+
+      mk('circle', { cx: cpx, cy: cpy, r: 2.5, class: 'mm-cdot' }, childG);
+
+      const ca2 = cpx < np.x - 5 ? 'end' : cpx > np.x + 5 ? 'start' : 'middle';
+      const clox = ca2 === 'end' ? -8 : ca2 === 'start' ? 8 : 0;
+      const cloy = cpy < np.y ? -8 : 8;
+      const ct2 = mk('text', {
+        x: cpx + clox,
+        y: cpy + cloy + 3,
+        class: 'mm-clabel',
+        'text-anchor': ca2,
+        style: `opacity:0;transition:opacity .3s ease ${ci*42+90}ms`
+      }, childG);
+      ct2.textContent = child;
+    });
+
+    // Toggle
+    function toggle(e) {
+      e.stopPropagation();
+      const wasOn = lbl.classList.contains('on');
+
+      // Reset all
+      svg.querySelectorAll('.mm-label').forEach(l => l.classList.remove('on'));
+      svg.querySelectorAll('.mm-dot').forEach(d => d.classList.remove('on'));
+      svg.querySelectorAll('.mm-path').forEach(p => p.classList.remove('hi'));
+      svg.querySelectorAll('.mm-children').forEach(g => {
+        g.classList.remove('show');
+        g.querySelectorAll('.mm-clabel').forEach(t => t.style.opacity = 0);
+        g.querySelectorAll('.mm-cpath').forEach(p => p.classList.remove('go'));
+      });
+
+      if (!wasOn) {
+        lbl.classList.add('on');
+        ndot.classList.add('on');
+        path.classList.add('hi');
+        childG.classList.add('show');
+        childG.querySelectorAll('.mm-cpath').forEach((p, i) =>
+          setTimeout(() => p.classList.add('go'), i * 42));
+        childG.querySelectorAll('.mm-clabel').forEach((t, i) =>
+          setTimeout(() => t.style.opacity = 1, i * 42 + 100));
+      }
+    }
+
+    lbl.addEventListener('click', toggle);
+    ndot.addEventListener('click', toggle);
+    hov([lbl, ndot]);
+  });
+
+  // Click bg to reset
+  svg.addEventListener('click', () => {
+    svg.querySelectorAll('.mm-label').forEach(l => l.classList.remove('on'));
+    svg.querySelectorAll('.mm-dot').forEach(d => d.classList.remove('on'));
+    svg.querySelectorAll('.mm-path').forEach(p => p.classList.remove('hi'));
+    svg.querySelectorAll('.mm-children').forEach(g => {
+      g.classList.remove('show');
+      g.querySelectorAll('.mm-clabel').forEach(t => t.style.opacity = 0);
+      g.querySelectorAll('.mm-cpath').forEach(p => p.classList.remove('go'));
+    });
+  });
+}
+</script>
+</body>
+</html>
