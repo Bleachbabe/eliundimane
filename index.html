@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artists</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..900&display=swap" rel="stylesheet">
+  <style>
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      overflow: hidden;
+      font-family: 'Roboto Flex', 'Arial Black', Helvetica, sans-serif;
+    }
+
+    /* ── Snap scroll container ── */
+    .scroll-container {
+      width: 100%;
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scrollbar-width: none;
+      position: relative;
+      z-index: 1;
+    }
+    .scroll-container::-webkit-scrollbar { display: none; }
+
+    /* ── Individual artist slides ── */
+    .slide {
+      height: clamp(70px, 10vw, 140px);
+      position: relative;
+      scroll-snap-align: center;
+      overflow: hidden;
+    }
+
+    /* Padding slides so first/last name can reach center */
+    .slide-spacer {
+      height: 50vh;
+      scroll-snap-align: none;
+    }
+
+    .artist-name {
+      font-family: 'Roboto Flex', 'Arial Black', Helvetica, sans-serif;
+      font-weight: 700;
+      font-variation-settings:
+        'wdth' 101,
+        'opsz' 90,
+        'GRAD' 150,
+        'slnt' 0,
+        'XTRA' 468,
+        'XOPQ' 96,
+        'YOPQ' 79,
+        'YTLC' 514,
+        'YTUC' 712,
+        'YTDE' -203,
+        'YTAS' 750,
+        'YTFI' 738;
+      font-size: clamp(72px, 14vw, 220px);
+      color: #000;
+      white-space: nowrap;
+      line-height: 0.82;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%) scaleY(0.58);
+      transform-origin: center center;
+      text-align: center;
+      text-shadow:
+        0   0   6px rgba(0,0,0,0.55),
+        1px 2px 6px rgba(0,0,0,0.30),
+       -1px 2px 6px rgba(0,0,0,0.30);
+      -webkit-text-stroke: 0.5px rgba(0,0,0,0.4);
+    }
+
+    /* ── Fixed grey oval overlay ── */
+    .brush {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 10;
+      mix-blend-mode: difference;
+      background: linear-gradient(to bottom, #fff 0%, #313131 25%, #fff 50%, #313131 75%, #fff 100%);
+    }
+
+    /* Linked artist names */
+    .artist-link {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    .artist-link:hover { opacity: 0.6; }
+
+    .connector {
+      font-size: 0.55em;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 768px) {
+      .slide { height: clamp(90px, 13vw, 160px); }
+      .artist-name { font-size: clamp(48px, 55vw, 220px); left: 50%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scroll-container">
+    <div class="slide-spacer"></div>
+    <div class="slide" data-img="1"><span class="artist-name">36birds</span></div>
+    <div class="slide" data-img="2"><span class="artist-name">Aa Sudd</span></div>
+    <div class="slide" data-img="3"><span class="artist-name">Bast Hippocrate <span class="connector">&</span><br> William Cardoso</span></div>
+    <div class="slide" data-img="4"><span class="artist-name">Buttechno</span></div>
+    <div class="slide" data-img="5"><span class="artist-name">crp</span></div>
+    <div class="slide" data-img="6"><span class="artist-name">francine satu</span></div>
+    <div class="slide" data-img="7"><span class="artist-name">kriss mess</span></div>
+    <div class="slide" data-img="8"><span class="artist-name">MÂNAA <span class="connector">b2b</span><br> Caramelo Gabanna</span></div>
+    <div class="slide" data-img="9"><span class="artist-name">Martín M. Wollmann <span class="connector">&</span><br> Rafał Pierzyński</span></div>
+    <div class="slide" data-img="10"><span class="artist-name">Melissa Guex <span class="connector">&</span><br> Katerina Andreu</span></div>
+    <div class="slide" data-img="11"><span class="artist-name">margaretha jüngling, <br> Alina Arshi <span class="connector">&</span> Luc Häfliger</span></div>
+    <div class="slide" data-img="12"><span class="artist-name">Ohm Sweet</span></div>
+    <div class="slide" data-img="13"><span class="artist-name">ophélie</span></div>
+    <div class="slide" data-img="14"><span class="artist-name">Piezo <span class="connector">&</span> Upsammy <br><span class="connector">present</span> Eerie Enterprise</span></div>
+    <div class="slide" data-img="15"><span class="artist-name">Souzo</span></div>
+    <div class="slide" data-img="16"><span class="artist-name">Stefanie Egedy</span></div>
+    <div class="slide" data-img="1"><span class="artist-name">STREIKTHROUGH</span></div>
+    <div class="slide" data-img="2"><span class="artist-name">Ula Liagaitė</span></div>
+    <div class="slide-spacer"></div>
+  </div>
+
+  <!-- Fixed grey brush stroke – mix-blend-mode: difference -->
+  <div class="brush"></div>
+
+  <script>
+    const container = document.querySelector('.scroll-container');
+    const slides    = Array.from(document.querySelectorAll('.slide'));
+
+    let currentImg = null;
+
+    // ── Audio synthesis ──────────────────────────────────────────────
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const masterInput = audioCtx.createGain();
+    masterInput.connect(audioCtx.destination);
+
+    function noise(duration, filter = null, filterFreq = 2000) {
+      const buf  = audioCtx.createBuffer(1, audioCtx.sampleRate * duration, audioCtx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      const g = audioCtx.createGain();
+      if (filter) {
+        const f = audioCtx.createBiquadFilter();
+        f.type = filter; f.frequency.value = filterFreq;
+        src.connect(f); f.connect(g);
+      } else {
+        src.connect(g);
+      }
+      g.connect(masterInput);
+      return { src, gain: g };
+    }
+
+    function osc(freq, type = 'sine') {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type; o.frequency.value = freq;
+      o.connect(g); g.connect(masterInput);
+      return { osc: o, gain: g };
+    }
+
+    function env(gainNode, peak, decay, t) {
+      gainNode.gain.setValueAtTime(peak, t);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, t + decay);
+    }
+
+    const sounds = {
+      1:  (t) => {
+            const { src, gain: g } = noise(0.2, 'bandpass', 800);
+            env(g, 0.7, 0.18, t); g.gain.setValueAtTime(0.7, t); src.start(t); src.stop(t + 0.2);
+            const { osc: o, gain: og } = osc(200); env(og, 0.4, 0.08, t); o.start(t); o.stop(t + 0.1);
+          },
+      2:  (t) => {
+            const { osc: o, gain: g } = osc(60);
+            o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.1);
+            env(g, 0.9, 0.3, t); o.start(t); o.stop(t + 0.35);
+          },
+      3:  (t) => {
+            const { src, gain: g } = noise(0.08, 'highpass', 8000);
+            env(g, 0.4, 0.05, t); g.gain.setValueAtTime(0.4, t); src.start(t); src.stop(t + 0.08);
+          },
+      4:  (t) => {
+            [0, 0.01, 0.02].forEach(offset => {
+              const { src, gain: g } = noise(0.07, 'bandpass', 1200);
+              g.gain.setValueAtTime(0.5, t + offset);
+              g.gain.exponentialRampToValueAtTime(0.0001, t + offset + 0.06);
+              src.start(t + offset); src.stop(t + offset + 0.07);
+            });
+          },
+      5:  (t) => {
+            const { osc: o, gain: g } = osc(320);
+            o.frequency.setValueAtTime(320, t); o.frequency.exponentialRampToValueAtTime(180, t + 0.15);
+            env(g, 0.7, 0.2, t); o.start(t); o.stop(t + 0.25);
+          },
+      6:  (t) => {
+            const { osc: o, gain: g } = osc(100);
+            o.frequency.setValueAtTime(100, t); o.frequency.exponentialRampToValueAtTime(55, t + 0.2);
+            env(g, 0.8, 0.3, t); o.start(t); o.stop(t + 0.35);
+          },
+      7:  (t) => {
+            const { src, gain: g } = noise(0.4, 'highpass', 7000);
+            env(g, 0.35, 0.35, t); g.gain.setValueAtTime(0.35, t); src.start(t); src.stop(t + 0.4);
+          },
+      8:  (t) => {
+            const { osc: o, gain: g } = osc(900, 'triangle');
+            env(g, 0.6, 0.04, t); o.start(t); o.stop(t + 0.05);
+            const { src, gain: ng } = noise(0.04, 'bandpass', 1800);
+            env(ng, 0.3, 0.03, t); ng.gain.setValueAtTime(0.3, t); src.start(t); src.stop(t + 0.04);
+          },
+      9:  (t) => {
+            const { osc: o, gain: g } = osc(55);
+            o.frequency.setValueAtTime(200, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.15);
+            env(g, 1.0, 0.6, t); o.start(t); o.stop(t + 0.7);
+          },
+      10: (t) => {
+            const { src, gain: g } = noise(0.05, 'bandpass', 6000);
+            env(g, 0.2, 0.04, t); g.gain.setValueAtTime(0.2, t); src.start(t); src.stop(t + 0.05);
+          },
+      11: (t) => {
+            const { src, gain: g } = noise(1.0, 'highpass', 5000);
+            g.gain.setValueAtTime(0.3, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.0);
+            src.start(t); src.stop(t + 1.0);
+          },
+      12: (t) => {
+            const { osc: o, gain: g } = osc(1400, 'sine');
+            env(g, 0.7, 0.025, t); o.start(t); o.stop(t + 0.03);
+          },
+      13: (t) => {
+            const { src, gain: g } = noise(0.25, 'bandpass', 500);
+            env(g, 0.6, 0.22, t); g.gain.setValueAtTime(0.6, t); src.start(t); src.stop(t + 0.25);
+            const { osc: o, gain: og } = osc(120); env(og, 0.5, 0.1, t); o.start(t); o.stop(t + 0.12);
+          },
+      14: (t) => {
+            const { src, gain: g } = noise(0.06, 'bandpass', 5000);
+            env(g, 0.25, 0.05, t); g.gain.setValueAtTime(0.25, t); src.start(t); src.stop(t + 0.06);
+          },
+      15: (t) => {
+            const { osc: o, gain: g } = osc(440, 'triangle');
+            o.frequency.setValueAtTime(660, t); o.frequency.exponentialRampToValueAtTime(220, t + 0.12);
+            env(g, 0.6, 0.15, t); o.start(t); o.stop(t + 0.2);
+          },
+      16: (t) => {
+            const { osc: o, gain: g } = osc(40);
+            o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(30, t + 0.2);
+            env(g, 1.0, 0.5, t); o.start(t); o.stop(t + 0.55);
+          },
+    };
+
+    function playSample(imgNum) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const fn = sounds[parseInt(imgNum)];
+      if (fn) fn(audioCtx.currentTime);
+    }
+
+    function setBackground(imgNum) {
+      if (imgNum === currentImg) return;
+      currentImg = imgNum;
+      playSample(imgNum);
+    }
+
+    function update() {
+      const vh      = container.clientHeight;
+      const centerY = vh / 2;
+      let   closest = null;
+      let   closestDist = Infinity;
+
+      slides.forEach((slide, i) => {
+        const rect        = slide.getBoundingClientRect();
+        const slideCenter = rect.top + rect.height / 2;
+        const dist        = slideCenter - centerY;
+        const absDist     = Math.abs(dist);
+
+        if (absDist < closestDist) {
+          closestDist = absDist;
+          closest     = slide;
+        }
+
+        const t         = Math.min(absDist / (vh * 0.5), 1);
+        const eased     = t * t;
+        const direction = i % 2 === 0 ? 1 : -1;
+        const angle     = eased * 42 * direction;
+        const scaleMult = window.innerWidth <= 768 ? 2.5 : 1;
+        const scale     = 1 + eased * scaleMult;
+
+        slide.style.transform = `perspective(700px) rotateY(${angle}deg) scale(${scale})`;
+      });
+
+      if (closest) {
+        setBackground(closest.dataset.img);
+      }
+    }
+
+    function fitToLongest() {
+      const names = document.querySelectorAll('.artist-name');
+      names.forEach(el => { el.style.fontSize = ''; });
+      let maxW = 0;
+      names.forEach(el => { if (el.scrollWidth > maxW) maxW = el.scrollWidth; });
+      const available = container.clientWidth * 0.92;
+      if (maxW > available) {
+        const base = parseFloat(getComputedStyle(names[0]).fontSize);
+        const fitted = base * (available / maxW);
+        names.forEach(el => { el.style.fontSize = fitted + 'px'; });
+      }
+    }
+
+    function adjustSlideHeights() {
+      // Reset to CSS default so we can read the intended single-line height
+      slides.forEach(s => { s.style.height = ''; });
+      const SCALE_Y = 0.58;
+      // Use a single-line slide as the reference for padding
+      const refSlide = slides.find(s => !s.querySelector('.artist-name br')) || slides[0];
+      const refH = parseFloat(getComputedStyle(refSlide).height);
+      const refNameEl = refSlide.querySelector('.artist-name');
+      const refNameVisualH = refNameEl.offsetHeight * SCALE_Y;
+      const isMobile = window.innerWidth <= 768;
+      const pad = Math.max((refH - refNameVisualH) / 2, 8) * (isMobile ? 0.8 : 1);
+      // Set every slide height = visual name height + same padding on each side
+      slides.forEach(slide => {
+        const nameEl = slide.querySelector('.artist-name');
+        if (!nameEl) return;
+        slide.style.height = (nameEl.offsetHeight * SCALE_Y + pad * 2) + 'px';
+      });
+    }
+
+    container.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+    window.addEventListener('resize', () => { fitToLongest(); adjustSlideHeights(); });
+    fitToLongest();
+    adjustSlideHeights();
+    update();
+  </script>
+
+</body>
+</html>
